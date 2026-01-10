@@ -1,7 +1,7 @@
-const tg = window.Telegram.WebApp;
+let tg = window.Telegram.WebApp
 tg.expand();
 
-const startParam = tg.initDataUnsafe?.start_param;
+const startParam = tg.initData
 document.getElementById("input").value = startParam;
 
 function send() {

@@ -1,8 +1,7 @@
 let tg = window.Telegram.WebApp
 tg.expand();
 
-const startParam = tg.initData
-document.getElementById("input").value = startParam;
+console.log(tg.toJSON());
 
 function send() {
     const value = document.getElementById("input").value;

@@ -1,18 +1,184 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>Mini App</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Matching Mini App</title>
+
+  <!-- Telegram WebApp API -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: system-ui, sans-serif;
+      background: #f0f2f5;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .columns {
+      display: flex;
+      gap: 12px;
+    }
+
+    .column {
+      flex: 1;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 10px;
+      min-height: 200px;
+    }
+
+    .column-title {
+      font-weight: 600;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .card {
+      background: #f9f9f9;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 8px;
+      cursor: grab;
+      user-select: none;
+      border: 1px solid #e0e0e0;
+      transition: background 0.2s;
+    }
+
+    .card:active {
+      cursor: grabbing;
+      background: #eaeaea;
+    }
+
+    button {
+      margin-top: 16px;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: none;
+      background: #2ea6ff;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:active {
+      background: #1c8ed6;
+    }
+  </style>
 </head>
 <body>
 
-<h1>Telegram Mini App</h1>
+  <h2>Соотнеси элементы</h2>
 
-<input id="input" placeholder="Введи текст">
-<button onclick="send()">Отправить</button>
+  <div class="columns">
+    <div class="column" id="left">
+      <div class="column-title">Категории</div>
+    </div>
 
-<script src="app.js"></script>
+    <div class="column" id="right">
+      <div class="column-title">Элементы</div>
+    </div>
+  </div>
+
+  <button onclick="submit()">Готово</button>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    // ===== ДАННЫЕ =====
+
+    let leftColumn = [
+      { id: "a1", text: "Фрукты" },
+      { id: "a2", text: "Животные" },
+      { id: "a3", text: "Цвета" }
+    ];
+
+    let rightColumn = [
+      { id: "b1", text: "Яблоко" },
+      { id: "b2", text: "Банан" },
+      { id: "b3", text: "Кошка" },
+      { id: "b4", text: "Красный" },
+      { id: "b5", text: "Синий" }
+    ];
+
+    // ===== RENDER =====
+
+    const leftEl = document.getElementById("left");
+    const rightEl = document.getElementById("right");
+
+    function render() {
+      leftEl.querySelectorAll(".card").forEach(e => e.remove());
+      rightEl.querySelectorAll(".card").forEach(e => e.remove());
+
+      leftColumn.forEach(card => {
+        leftEl.appendChild(createCard(card, "left"));
+      });
+
+      rightColumn.forEach(card => {
+        rightEl.appendChild(createCard(card, "right"));
+      });
+    }
+
+    // ===== DRAG & DROP =====
+
+    let draggedIndex = null;
+    let draggedSide = null;
+
+    function createCard(card, side) {
+      const div = document.createElement("div");
+      div.className = "card";
+      div.textContent = card.text;
+      div.draggable = true;
+
+      div.addEventListener("dragstart", () => {
+        draggedSide = side;
+        draggedIndex = (side === "left" ? leftColumn : rightColumn)
+          .findIndex(c => c.id === card.id);
+      });
+
+      div.addEventListener("dragover", e => {
+        e.preventDefault();
+      });
+
+      div.addEventListener("drop", e => {
+        e.preventDefault();
+        if (draggedSide !== side) return;
+
+        const list = side === "left" ? leftColumn : rightColumn;
+        const targetIndex = list.findIndex(c => c.id === card.id);
+
+        const [moved] = list.splice(draggedIndex, 1);
+        list.splice(targetIndex, 0, moved);
+
+        render();
+      });
+
+      return div;
+    }
+
+    // ===== RESULT =====
+
+    function submit() {
+      const result = {
+        left_order: leftColumn.map(c => c.id),
+        right_order: rightColumn.map(c => c.id)
+      };
+
+      tg.sendData(JSON.stringify({
+        action: "match",
+        result: result
+      }));
+    }
+
+    render();
+  </script>
+
 </body>
 </html>

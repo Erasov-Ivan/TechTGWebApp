@@ -4,7 +4,7 @@ tg.ready();
 tg.expand();
 
 const params = new URLSearchParams(window.location.search);
-console.log(params);
+console.log(params.get("polymarket"));
 
 
 function send() {

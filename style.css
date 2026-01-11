@@ -35,17 +35,14 @@ body {
     user-select: none;
 }
 
-.card:active {
-    cursor: grabbing;
-    opacity: 0.7;
-}
-
-.card.dragging {
-    opacity: 0.7;
-}
-
 .card {
-    touch-action: none;
+    touch-action: manipulation;
 }
+
+.card.active {
+    background: var(--tg-theme-button-color, #3390ec);
+    color: var(--tg-theme-button-text-color, #ffffff);
+}
+
 
 

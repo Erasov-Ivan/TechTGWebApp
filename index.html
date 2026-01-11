@@ -1,21 +1,16 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram Web App</title>
-
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<div class="container">
-    <div class="column" id="left-column"></div>
-    <div class="column" id="right-column"></div>
-</div>
-
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="app.js"></script>
-
+    <div id="columns-container">
+        <div id="left-column" class="column"></div>
+        <div id="right-column" class="column"></div>
+    </div>
+    <script src="app.js"></script>
 </body>
 </html>

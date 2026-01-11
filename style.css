@@ -1,3 +1,14 @@
+* {
+    box-sizing: border-box;
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+body {
+    margin: 0;
+    background: #0f0f11;
+    color: #eaeaea;
+}
+
 #columns-container {
     display: flex;
     gap: 12px;
@@ -6,40 +17,86 @@
 
 .column {
     flex: 1;
-    background-color: #1e1e1e;
-    padding: 8px;
-    border-radius: 8px;
-    min-height: 300px;
+    background: #18181b;
+    padding: 10px;
+    border-radius: 14px;
+    min-height: 320px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
 }
 
 .card {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 8px;
-    margin-bottom: 6px;
-    border: 1px solid #444;
-    border-radius: 6px;
-    background-color: #2e2e2e;
-    color: white;
+    justify-content: space-between;
+
+    padding: 10px 12px;
+    margin-bottom: 8px;
+
+    background: #222226;
+    border-radius: 10px;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    color: #f2f2f2;
+
     cursor: pointer;
+    transition: background 0.15s ease, transform 0.05s ease;
     touch-action: manipulation;
 }
 
+.card:hover {
+    background: #2a2a30;
+}
+
+.card:active {
+    transform: scale(0.985);
+}
+
 .card.active {
-    background-color: #3390ec;
+    background: #2f6fec;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.15) inset;
 }
 
 .swap-indicator {
-    margin-right: 6px;
+    margin-right: 8px;
+    opacity: 0.9;
+}
+
+.card-text {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-buttons {
+    display: flex;
+    gap: 6px;
+    margin-left: 8px;
 }
 
 .card-buttons button {
-    margin-left: 4px;
-    padding: 2px 6px;
-    cursor: pointer;
-    background-color: #555;
-    color: white;
+    width: 26px;
+    height: 26px;
+
+    border-radius: 6px;
     border: none;
-    border-radius: 4px;
+
+    background: #333338;
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.card-buttons button:hover {
+    background: #44444b;
+}
+
+.card-buttons button:active {
+    background: #55555e;
 }

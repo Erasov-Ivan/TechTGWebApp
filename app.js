@@ -1,22 +1,13 @@
-// ========================
-// Telegram init
-// ========================
 const tg = window.Telegram.WebApp;
 
 tg.ready();
 tg.expand();
 
-// ========================
-// Получаем массивы из URL
-// ========================
 const params = new URLSearchParams(window.location.search);
 
 const leftItems = JSON.parse(params.get("left") || "[]");
 const rightItems = JSON.parse(params.get("right") || "[]");
 
-// ========================
-// Рендер колонок
-// ========================
 function renderColumn(columnId, items) {
     const column = document.getElementById(columnId);
     column.innerHTML = "";
@@ -33,16 +24,12 @@ function renderColumn(columnId, items) {
 renderColumn("left-column", leftItems);
 renderColumn("right-column", rightItems);
 
-// ========================
-// Swap logic (tap → tap)
-// ========================
 let activeCard = null;
 
 document.addEventListener("click", (e) => {
     const card = e.target.closest(".card");
     if (!card) return;
 
-    // если ещё не выбрали активную
     if (!activeCard) {
         activeCard = card;
         activeCard.classList.add("active");
@@ -50,28 +37,34 @@ document.addEventListener("click", (e) => {
         return;
     }
 
-    // кликнули на ту же самую
     if (activeCard === card) {
         resetActive();
         return;
     }
 
-    // только внутри одной колонки
     if (activeCard.parentElement !== card.parentElement) {
         resetActive();
         return;
     }
 
-    // меняем местами
     swapCards(activeCard, card);
     resetActive();
 });
 
 function swapCards(card1, card2) {
     const col = card1.parentElement;
-    const next1 = card1.nextSibling === card2 ? card1 : card1.nextSibling;
-    col.insertBefore(card2, next1);
-    col.insertBefore(card1, card2);
+
+    const next1 = card1.nextSibling;
+    const next2 = card2.nextSibling;
+
+    if (next1 === card2) {
+        col.insertBefore(card2, card1);
+    } else if (next2 === card1) {
+        col.insertBefore(card1, card2);
+    } else {
+        col.insertBefore(card2, next1);
+        col.insertBefore(card1, next2);
+    }
 }
 
 function resetActive() {
@@ -82,17 +75,11 @@ function resetActive() {
     activeCard = null;
 }
 
-// ========================
-// Получение результата
-// ========================
 function getColumnData(columnId) {
     return [...document.getElementById(columnId).children]
         .map(card => card.textContent.replace(/^🔄\s*/, ""));
 }
 
-// ========================
-// Telegram MainButton
-// ========================
 tg.MainButton.setText("Сохранить");
 tg.MainButton.show();
 

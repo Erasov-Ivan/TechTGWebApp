@@ -39,3 +39,13 @@ body {
     cursor: grabbing;
     opacity: 0.7;
 }
+
+.card.dragging {
+    opacity: 0.7;
+}
+
+.card {
+    touch-action: none;
+}
+
+

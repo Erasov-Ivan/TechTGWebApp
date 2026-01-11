@@ -29,10 +29,13 @@ body {
 .card {
     background: var(--bg);
     border-radius: 8px;
-    padding: 12px;
-    margin-bottom: 8px;
+    padding: 8px;
+    margin-bottom: 6px;
     cursor: grab;
     user-select: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .card {
@@ -44,5 +47,12 @@ body {
     color: var(--tg-theme-button-text-color, #ffffff);
 }
 
+.card button {
+    background: #ddd;
+    border: none;
+    border-radius: 4px;
+    padding: 2px 6px;
+    cursor: pointer;
+}
 
 

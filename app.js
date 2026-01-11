@@ -70,6 +70,51 @@ function getColumnData(columnId) {
 }
 
 
+let activeCard = null;
+let startY = 0;
+
+document.addEventListener("pointerdown", (e) => {
+    if (!e.target.classList.contains("card")) return;
+
+    activeCard = e.target;
+    startY = e.clientY;
+
+    activeCard.setPointerCapture(e.pointerId);
+    activeCard.classList.add("dragging");
+});
+
+document.addEventListener("pointermove", (e) => {
+    if (!activeCard) return;
+
+    const column = activeCard.parentElement;
+    const cards = [...column.querySelectorAll(".card")];
+
+    cards.forEach(card => {
+        if (card === activeCard) return;
+
+        const rect = card.getBoundingClientRect();
+        const middle = rect.top + rect.height / 2;
+
+        if (e.clientY < middle && card.previousSibling !== activeCard) {
+            column.insertBefore(activeCard, card);
+        } else if (
+            e.clientY > middle &&
+            card.nextSibling !== activeCard
+        ) {
+            column.insertBefore(activeCard, card.nextSibling);
+        }
+    });
+});
+
+document.addEventListener("pointerup", () => {
+    if (!activeCard) return;
+
+    activeCard.classList.remove("dragging");
+    activeCard = null;
+});
+
+
+
 tg.MainButton.setText("Сохранить");
 tg.MainButton.show();
 

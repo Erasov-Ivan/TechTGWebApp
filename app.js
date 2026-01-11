@@ -3,9 +3,9 @@ const tg = window.Telegram.WebApp;
 tg.ready();
 tg.expand();
 
-console.log(tg.initData);
-console.log(tg.initDataUnsafe);
-console.log(tg.initDataUnsafe.start_param);
+const params = new URLSearchParams(window.location.search);
+console.log(params);
+
 
 function send() {
     const value = document.getElementById("input").value;
@@ -15,5 +15,3 @@ function send() {
         value: value
     }));
 }
-
-

@@ -1,7 +1,7 @@
 let tg = window.Telegram.WebApp
 tg.expand();
 
-console.log(tg.toJSON());
+console.log(tg.initDataUnsafe);
 
 function send() {
     const value = document.getElementById("input").value;

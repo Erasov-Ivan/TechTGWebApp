@@ -4,7 +4,6 @@
     padding: 12px;
 }
 
-
 .column {
     flex: 1;
     background-color: #1e1e1e;
@@ -12,7 +11,6 @@
     border-radius: 8px;
     min-height: 300px;
 }
-
 
 .card {
     display: flex;
@@ -25,17 +23,16 @@
     background-color: #2e2e2e;
     color: white;
     cursor: pointer;
+    touch-action: manipulation;
 }
 
 .card.active {
     background-color: #3390ec;
-    color: white;
 }
 
-.card .swap-indicator {
+.swap-indicator {
     margin-right: 6px;
 }
-
 
 .card-buttons button {
     margin-left: 4px;
@@ -45,9 +42,4 @@
     color: white;
     border: none;
     border-radius: 4px;
-}
-
-
-.card {
-    touch-action: manipulation;
 }

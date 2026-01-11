@@ -44,7 +44,7 @@ body {
     transition: background 0.15s ease, transform 0.05s ease;
     touch-action: manipulation;
 
-    height: 56px;
+    height: 84px;
     min-width: 0;
 }
 
@@ -121,4 +121,5 @@ body {
 .card-buttons button:active {
     background: #55555e;
 }
+
 

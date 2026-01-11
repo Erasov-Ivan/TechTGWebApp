@@ -122,4 +122,27 @@ body {
     background: #55555e;
 }
 
+.column-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
 
+.column-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #9ca3af;
+    margin-bottom: 6px;
+    padding-left: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.column {
+    flex: 1;
+    background: #18181b;
+    padding: 10px;
+    border-radius: 14px;
+    min-height: 320px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+}

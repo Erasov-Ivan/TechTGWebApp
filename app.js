@@ -1,14 +1,22 @@
+// ========================
+// Telegram init
+// ========================
 const tg = window.Telegram.WebApp;
 
 tg.ready();
 tg.expand();
 
-
+// ========================
+// Получаем массивы из URL
+// ========================
 const params = new URLSearchParams(window.location.search);
 
 const leftItems = JSON.parse(params.get("left") || "[]");
 const rightItems = JSON.parse(params.get("right") || "[]");
 
+// ========================
+// Рендер колонок
+// ========================
 function renderColumn(columnId, items) {
     const column = document.getElementById(columnId);
     column.innerHTML = "";
@@ -25,74 +33,66 @@ function renderColumn(columnId, items) {
 renderColumn("left-column", leftItems);
 renderColumn("right-column", rightItems);
 
-
+// ========================
+// Swap logic (tap → tap)
+// ========================
 let activeCard = null;
-let activeColumn = null;
-let pointerId = null;
 
-document.addEventListener("pointerdown", (e) => {
-    if (!e.target.classList.contains("card")) return;
+document.addEventListener("click", (e) => {
+    const card = e.target.closest(".card");
+    if (!card) return;
 
-    e.preventDefault();
-
-    activeCard = e.target;
-    activeColumn = activeCard.parentElement;
-    pointerId = e.pointerId;
-
-    activeCard.classList.add("dragging");
-    activeCard.setPointerCapture(pointerId);
-});
-
-document.addEventListener("pointermove", (e) => {
-    if (!activeCard || e.pointerId !== pointerId) return;
-
-    e.preventDefault();
-
-    const cards = [...activeColumn.querySelectorAll(".card")];
-
-    for (const card of cards) {
-        if (card === activeCard) continue;
-
-        const rect = card.getBoundingClientRect();
-        const middle = rect.top + rect.height / 2;
-
-        if (e.clientY < middle && card.previousElementSibling !== activeCard) {
-            activeColumn.insertBefore(activeCard, card);
-            break;
-        }
-
-        if (
-            e.clientY > middle &&
-            card.nextElementSibling !== activeCard
-        ) {
-            activeColumn.insertBefore(activeCard, card.nextElementSibling);
-            break;
-        }
+    // если ещё не выбрали активную
+    if (!activeCard) {
+        activeCard = card;
+        activeCard.classList.add("active");
+        activeCard.textContent = "🔄 " + activeCard.textContent;
+        return;
     }
+
+    // кликнули на ту же самую
+    if (activeCard === card) {
+        resetActive();
+        return;
+    }
+
+    // только внутри одной колонки
+    if (activeCard.parentElement !== card.parentElement) {
+        resetActive();
+        return;
+    }
+
+    // меняем местами
+    swapCards(activeCard, card);
+    resetActive();
 });
 
-function finishDrag() {
+function swapCards(card1, card2) {
+    const col = card1.parentElement;
+    const next1 = card1.nextSibling === card2 ? card1 : card1.nextSibling;
+    col.insertBefore(card2, next1);
+    col.insertBefore(card1, card2);
+}
+
+function resetActive() {
     if (!activeCard) return;
 
-    try {
-        activeCard.releasePointerCapture(pointerId);
-    } catch (_) {}
-
-    activeCard.classList.remove("dragging");
+    activeCard.classList.remove("active");
+    activeCard.textContent = activeCard.textContent.replace(/^🔄\s*/, "");
     activeCard = null;
-    activeColumn = null;
-    pointerId = null;
 }
 
-document.addEventListener("pointerup", finishDrag);
-document.addEventListener("pointercancel", finishDrag);
-document.addEventListener("pointerleave", finishDrag);
-
+// ========================
+// Получение результата
+// ========================
 function getColumnData(columnId) {
     return [...document.getElementById(columnId).children]
-        .map(card => card.textContent);
+        .map(card => card.textContent.replace(/^🔄\s*/, ""));
 }
 
+// ========================
+// Telegram MainButton
+// ========================
 tg.MainButton.setText("Сохранить");
 tg.MainButton.show();
 

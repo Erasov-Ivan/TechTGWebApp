@@ -1,73 +1,67 @@
 const tg = window.Telegram.WebApp;
-
 tg.ready();
 tg.expand();
 
 const params = new URLSearchParams(window.location.search);
-
 const leftItems = JSON.parse(params.get("left") || "[]");
 const rightItems = JSON.parse(params.get("right") || "[]");
+
+let activeCard = null;
 
 function createCard(text) {
     const card = document.createElement("div");
     card.className = "card";
 
+    const swapSpan = document.createElement("span");
+    swapSpan.className = "swap-indicator";
+
     const textSpan = document.createElement("span");
     textSpan.className = "card-text";
     textSpan.textContent = text;
-
-    const swapSpan = document.createElement("span");
-    swapSpan.className = "swap-indicator";
 
     const btnContainer = document.createElement("span");
     btnContainer.className = "card-buttons";
 
     const plusBtn = document.createElement("button");
     plusBtn.textContent = "+";
-    plusBtn.addEventListener("click", (e) => {
+    plusBtn.onclick = (e) => {
         e.stopPropagation();
-        const newCard = createCard(textSpan.textContent);
+        const newCard = createCard(text);
         card.parentElement.insertBefore(newCard, card.nextSibling);
-    });
+        resetActive();
+    };
 
     const minusBtn = document.createElement("button");
     minusBtn.textContent = "–";
-    minusBtn.addEventListener("click", (e) => {
+    minusBtn.onclick = (e) => {
         e.stopPropagation();
         card.remove();
-    });
+        resetActive();
+    };
 
-    btnContainer.appendChild(plusBtn);
-    btnContainer.appendChild(minusBtn);
-
-    card.appendChild(swapSpan);
-    card.appendChild(textSpan);
-    card.appendChild(btnContainer);
+    btnContainer.append(plusBtn, minusBtn);
+    card.append(swapSpan, textSpan, btnContainer);
 
     return card;
 }
 
-function renderColumn(columnId, items) {
-    const column = document.getElementById(columnId);
-    column.innerHTML = "";
-    items.forEach(text => {
-        column.appendChild(createCard(text));
-    });
+function renderColumn(id, items) {
+    const col = document.getElementById(id);
+    col.innerHTML = "";
+    items.forEach(t => col.appendChild(createCard(t)));
 }
 
 renderColumn("left-column", leftItems);
 renderColumn("right-column", rightItems);
 
-let activeCard = null;
-
-document.addEventListener("click", (e) => {
+document.addEventListener("click", e => {
     const card = e.target.closest(".card");
     if (!card) return;
 
     if (!activeCard) {
         activeCard = card;
-        activeCard.classList.add("active");
-        activeCard.querySelector(".swap-indicator").textContent = "🔄";
+        card.classList.add("active");
+        card.querySelector(".swap-indicator").textContent = "🔄";
         return;
     }
 
@@ -80,19 +74,10 @@ document.addEventListener("click", (e) => {
     resetActive();
 });
 
-function swapCards(card1, card2) {
-    const col = card1.parentElement;
-    const next1 = card1.nextSibling;
-    const next2 = card2.nextSibling;
-
-    if (next1 === card2) {
-        col.insertBefore(card2, card1);
-    } else if (next2 === card1) {
-        col.insertBefore(card1, card2);
-    } else {
-        col.insertBefore(card2, next1);
-        col.insertBefore(card1, next2);
-    }
+function swapCards(a, b) {
+    const aNext = a.nextSibling === b ? a : a.nextSibling;
+    b.parentNode.insertBefore(a, b);
+    b.parentNode.insertBefore(b, aNext);
 }
 
 function resetActive() {
@@ -102,10 +87,9 @@ function resetActive() {
     activeCard = null;
 }
 
-function getColumnData(columnId) {
-    return [...document.getElementById(columnId).children].map(card =>
-        card.querySelector(".card-text").textContent
-    );
+function getColumnData(id) {
+    return [...document.getElementById(id).children]
+        .map(c => c.querySelector(".card-text").textContent);
 }
 
 tg.MainButton.setText("Сохранить");

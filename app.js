@@ -5,7 +5,7 @@ tg.expand();
 
 console.log(tg.initData);
 console.log(tg.initDataUnsafe);
-console.log(tg.initDataUnsafe.start_param)
+console.log(tg.initDataUnsafe.start_param);
 
 function send() {
     const value = document.getElementById("input").value;
@@ -15,3 +15,4 @@ function send() {
         value: value
     }));
 }
+
